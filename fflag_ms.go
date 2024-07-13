@@ -1,3 +1,4 @@
+// Package fflag_ms provides functionality to fetch and manage feature flags.
 package fflag_ms
 
 import (
@@ -14,12 +15,12 @@ type ApiConfigParameters struct {
   baseUrl string `default:"https://feature-flags2.p.rapidapi.com"`
 }
 
-type FeatureFlags struct {
+type featureFlags struct {
   config ApiConfigParameters
   data map[string]any
 }
 
-func (f *FeatureFlags) fetch() {  
+func (f *featureFlags) Fetch() {  
   req, err := http.NewRequest("GET", f.config.baseUrl, nil)
   req.Header.Set("x-rapidapi-key", f.config.key)
   req.Header.Set("namespace", f.config.namespace)
@@ -44,7 +45,7 @@ func (f *FeatureFlags) fetch() {
   json.Unmarshal([]byte(string(data)), &f.data)
 }
 
-func (f FeatureFlags) get(name string, fallback any) any {
+func (f featureFlags) Get(name string, fallback any) any {
   result := f.data[name]
 
   if result == nil {
@@ -54,15 +55,15 @@ func (f FeatureFlags) get(name string, fallback any) any {
   return result
 }
 
-func (f FeatureFlags) getAll() map[string]any {
+func (f featureFlags) GetAll() map[string]any {
   return f.data
 }
 
-func New(params ApiConfigParameters) *FeatureFlags {
-  ff := new(FeatureFlags)
+func New(params ApiConfigParameters) *featureFlags {
+  ff := new(featureFlags)
   ff.config = params  
 
-  ff.fetch()
+  ff.Fetch()
 
   return ff
 }
