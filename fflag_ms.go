@@ -11,8 +11,8 @@ import (
 type ApiConfigParameters struct {
 	Key       string
 	Namespace string
-	RefreshMS uint   `default:"60000"`
-	BaseUrl   string `default:"https://feature-flags2.p.rapidapi.com"`
+	RefreshMS uint
+	BaseUrl   string
 }
 
 type featureFlags struct {
@@ -47,7 +47,18 @@ func (f *featureFlags) Fetch() {
 		return
 	}
 
-	json.Unmarshal([]byte(string(data)), &f.data)
+	var response map[string]any
+	json.Unmarshal([]byte(string(data)), &response)
+
+	castedMap, ok := response["data"].(map[string]any)
+
+	if ok {
+		f.data = castedMap
+		return
+	} else {
+		fmt.Println("Error: feature flags are malformed.")
+		return
+	}
 }
 
 func (f featureFlags) Get(name string, fallback any) any {
@@ -67,6 +78,9 @@ func (f featureFlags) GetAll() map[string]any {
 func New(params ApiConfigParameters) *featureFlags {
 	ff := new(featureFlags)
 	ff.config = params
+
+	ff.config.RefreshMS = 60000
+	ff.config.BaseUrl = "https://feature-flags2.p.rapidapi.com/v1/flags"
 
 	ff.Fetch()
 
