@@ -13,14 +13,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 )
 
 type ApiConfigParameters struct {
-	Key             string
-	Namespace       string
-	RefreshInterval time.Duration `json:"60000"`
-	BaseUrl         string        `json:"https://feature-flags2.p.rapidapi.com/v1/flags"`
+	Key       string
+	Namespace string
+	RefreshMS uint   `json:"60000"`
+	BaseUrl   string `json:"https://feature-flags2.p.rapidapi.com/v1/flags"`
 }
 
 type featureFlags struct {
