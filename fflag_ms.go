@@ -9,62 +9,61 @@ import (
 )
 
 type ApiConfigParameters struct {
-  key string 
-  namespace string
-  refreshMS uint `default:"60000"`
-  baseUrl string `default:"https://feature-flags2.p.rapidapi.com"`
+	key       string
+	namespace string
+	refreshMS uint   `default:"60000"`
+	baseUrl   string `default:"https://feature-flags2.p.rapidapi.com"`
 }
 
 type featureFlags struct {
-  config ApiConfigParameters
-  data map[string]any
+	config ApiConfigParameters
+	data   map[string]any
 }
 
-func (f *featureFlags) Fetch() {  
-  req, err := http.NewRequest("GET", f.config.baseUrl, nil)
-  req.Header.Set("x-rapidapi-key", f.config.key)
-  req.Header.Set("namespace", f.config.namespace)
+func (f *featureFlags) Fetch() {
+	req, err := http.NewRequest("GET", f.config.baseUrl, nil)
+	req.Header.Set("x-rapidapi-key", f.config.key)
+	req.Header.Set("namespace", f.config.namespace)
 
-  client := &http.Client{}
-  resp, err := client.Do(req)
+	client := &http.Client{}
+	resp, err := client.Do(req)
 
-  if err != nil {
-    fmt.Println("Error:", err)
-    return
-  }
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 
-  defer resp.Body.Close()
+	defer resp.Body.Close()
 
-  data, err := io.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 
-  if err != nil {
-    fmt.Println("Error", err)
-    return;
-  }
+	if err != nil {
+		fmt.Println("Error", err)
+		return
+	}
 
-  json.Unmarshal([]byte(string(data)), &f.data)
+	json.Unmarshal([]byte(string(data)), &f.data)
 }
 
 func (f featureFlags) Get(name string, fallback any) any {
-  result := f.data[name]
+	result := f.data[name]
 
-  if result == nil {
-    result = fallback
-  }
+	if result == nil {
+		result = fallback
+	}
 
-  return result
+	return result
 }
 
 func (f featureFlags) GetAll() map[string]any {
-  return f.data
+	return f.data
 }
 
 func New(params ApiConfigParameters) *featureFlags {
-  ff := new(featureFlags)
-  ff.config = params  
+	ff := new(featureFlags)
+	ff.config = params
 
-  ff.Fetch()
+	ff.Fetch()
 
-  return ff
+	return ff
 }
-
