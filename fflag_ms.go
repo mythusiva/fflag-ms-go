@@ -1,6 +1,13 @@
 // Package fflag_ms provides functionality to fetch and manage feature flags.
 package fflag_ms
 
+// TODO: Auto-fetch functionality
+// TODO: Put flags
+// TODO: Delete flags
+// TODO: Get CDN url
+// TODO: Set exposed names
+// TODO: Create README file for example usage
+
 import (
 	"encoding/json"
 	"fmt"
