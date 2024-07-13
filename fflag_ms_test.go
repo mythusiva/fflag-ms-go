@@ -1,5 +1,7 @@
 package fflag_ms
 
-func main() {
+import "testing"
 
+func TestInitializing(t *testing.T) {
+	// flags := New(ApiConfigParameters{})
 }

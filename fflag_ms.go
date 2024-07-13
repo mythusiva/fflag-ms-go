@@ -9,10 +9,10 @@ import (
 )
 
 type ApiConfigParameters struct {
-	key       string
-	namespace string
-	refreshMS uint   `default:"60000"`
-	baseUrl   string `default:"https://feature-flags2.p.rapidapi.com"`
+	Key       string
+	Namespace string
+	RefreshMS uint   `default:"60000"`
+	BaseUrl   string `default:"https://feature-flags2.p.rapidapi.com"`
 }
 
 type featureFlags struct {
@@ -21,9 +21,14 @@ type featureFlags struct {
 }
 
 func (f *featureFlags) Fetch() {
-	req, err := http.NewRequest("GET", f.config.baseUrl, nil)
-	req.Header.Set("x-rapidapi-key", f.config.key)
-	req.Header.Set("namespace", f.config.namespace)
+	req, err := http.NewRequest("GET", f.config.BaseUrl, nil)
+	req.Header.Set("x-rapidapi-key", f.config.Key)
+	req.Header.Set("namespace", f.config.Namespace)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
