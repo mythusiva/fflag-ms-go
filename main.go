@@ -1,4 +1,4 @@
-package main
+package fflag_ms
 
 import (
 	"encoding/json"
@@ -26,12 +26,13 @@ func (f *FeatureFlags) fetch() {
 
   client := &http.Client{}
   resp, err := client.Do(req)
-  defer resp.Body.Close()
 
   if err != nil {
     fmt.Println("Error:", err)
     return
   }
+
+  defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
 
@@ -44,7 +45,13 @@ func (f *FeatureFlags) fetch() {
 }
 
 func (f FeatureFlags) get(name string, fallback any) any {
-  return f.data[name]
+  result := f.data[name]
+
+  if result == nil {
+    result = fallback
+  }
+
+  return result
 }
 
 func (f FeatureFlags) getAll() map[string]any {
@@ -59,6 +66,4 @@ func New(params ApiConfigParameters) *FeatureFlags {
 
   return ff
 }
-
-func main() {}
 
